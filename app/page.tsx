@@ -13,15 +13,15 @@ export const songs = [
 // Trip Array with restaurant names separate from pickup
 const trips = [
   { price: "$10.50", ept: "EPT", service: "Nasty Service", restaurant: "Willy's", pickup: "123 Main St.", dropoff: "456 Elm St.", eta: "15 min" },
-  { price: "$8.75", ept: "EPT", service: "Chill Delivery", restaurant: "Chick-fil-A", pickup: "789 Oak St.", dropoff: "321 Pine St.", eta: "12 min" },
-  { price: "$12.00", ept: "EPT", service: "Fast Lane", restaurant: "Zaxby’s", pickup: "555 Maple Ave.", dropoff: "888 Cedar Rd.", eta: "18 min" },
-  { price: "$9.50", ept: "EPT", service: "Pro Delivery", restaurant: "Chili's", pickup: "101 Birch Blvd.", dropoff: "202 Walnut St.", eta: "14 min" },
-  { price: "$11.20", ept: "EPT", service: "Quick Eats", restaurant: "Iron Age", pickup: "303 Spruce Ln.", dropoff: "404 Aspen Ct.", eta: "17 min" },
-  { price: "$7.80", ept: "EPT", service: "Speedy", restaurant: "Popeyes", pickup: "606 Poplar St.", dropoff: "707 Chestnut Ave.", eta: "10 min" },
-  { price: "$13.50", ept: "EPT", service: "VIP Service", restaurant: "Five Guys", pickup: "909 Willow Dr.", dropoff: "1010 Pine St.", eta: "20 min" },
-  { price: "$10.00", ept: "EPT", service: "Green Delivery", restaurant: "Wendy's", pickup: "111 Elm St.", dropoff: "222 Oak St.", eta: "16 min" },
-  { price: "$8.90", ept: "EPT", service: "Rapid Eats", restaurant: "Domino's", pickup: "333 Cedar St.", dropoff: "444 Maple Rd.", eta: "13 min" },
-  { price: "$12.75", ept: "EPT", service: "Fresh & Fast", restaurant: "P.F. Chang's", pickup: "555 Birch St.", dropoff: "666 Spruce Ave.", eta: "19 min" },
+  { price: "$8.75", ept: "EPT", service: "Nasty Service", restaurant: "Chick-fil-A", pickup: "789 Oak St.", dropoff: "321 Pine St.", eta: "12 min" },
+  { price: "$12.00", ept: "EPT", service: "Nasty Service", restaurant: "Zaxby’s", pickup: "555 Maple Ave.", dropoff: "888 Cedar Rd.", eta: "18 min" },
+  { price: "$9.50", ept: "EPT", service: "Nasty Service", restaurant: "Chili's", pickup: "101 Birch Blvd.", dropoff: "202 Walnut St.", eta: "14 min" },
+  { price: "$11.20", ept: "EPT", service: "Nasty Service", restaurant: "Iron Age", pickup: "303 Spruce Ln.", dropoff: "404 Aspen Ct.", eta: "17 min" },
+  { price: "$7.80", ept: "EPT", service: "Nasty Service", restaurant: "Popeyes", pickup: "606 Poplar St.", dropoff: "707 Chestnut Ave.", eta: "10 min" },
+  { price: "$13.50", ept: "EPT", service: "Nasty Service", restaurant: "Five Guys", pickup: "909 Willow Dr.", dropoff: "1010 Pine St.", eta: "20 min" },
+  { price: "$10.00", ept: "EPT", service: "Nasty Service", restaurant: "Wendy's", pickup: "111 Elm St.", dropoff: "222 Oak St.", eta: "16 min" },
+  { price: "$8.90", ept: "EPT", service: "Nasty Service", restaurant: "Domino's", pickup: "333 Cedar St.", dropoff: "444 Maple Rd.", eta: "13 min" },
+  { price: "$12.75", ept: "EPT", service: "Nasty Service", restaurant: "P.F. Chang's", pickup: "555 Birch St.", dropoff: "666 Spruce Ave.", eta: "19 min" },
 ];
 
 export default function Home() {
