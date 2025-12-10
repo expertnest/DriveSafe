@@ -74,12 +74,19 @@ export default function Home() {
       )}
 
       {/* Header */}
-      <header className="flex flex-col items-center justify-center py-16 px-6 text-center sm:py-20 bg-red-600 text-white">
-        <h1 className="text-5xl font-bold leading-tight">Drive Safe, Homie...</h1>
-        <p className="mt-4 text-lg font-xs">
-          Jam out, ride safe — safe and fast deliveries. 🏎️💨 🍔🎧
-        </p>
-      </header>
+      <header className="relative flex flex-col items-center text-center bg-red-600 text-white py-16 px-6 sm:py-24">
+  <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
+    Drive Safe, Homie...
+  </h1>
+
+  <p className="mt-5 text-lg sm:text-xl font-light opacity-90">
+    Jam out, ride safe — Hot 🔥 & fast deliveries only. 🏎️💨 🍔🎧
+  </p>
+
+  <p className="absolute bottom-2 text-[9px] sm:text-[10px] opacity-80 tracking-wide">
+   * Don’t drop the Starbucks 😱 — keep it hot, no cold food allowed 🚫 *
+  </p>
+</header>
 
       {/* Songs Section */}
       <section className="pb-6 flex flex-col items-center gap-6 px-4 mt-6 relative z-0">
