@@ -1,16 +1,17 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
+import { motion, AnimatePresence } from "framer-motion";
 
 // Songs Array
 export const songs = [
   { id: "1", name: "Drive Safe", file: "/drive.mp3" },
-  { id: "2Gunna", name: "2Gunna", file: "/gunna.mp3" },
-  { id: "Scarface", name: "Scarface", file: "/scar.mp3" },
-  { id: "Hood Nights", name: "Hood Nights", file: "/hood.mp3" },
+  { id: "2", name: "2Gunna", file: "/gunna.mp3" },
+  { id: "3", name: "Scarface", file: "/scar.mp3" },
+  { id: "4", name: "Hood Nights", file: "/hood.mp3" },
 ];
 
-// Trip Array with restaurant names separate from pickup
+// Trip Array
 const trips = [
   { price: "$10.50", ept: "EPT", service: "Nasty Service", restaurant: "Willy's", pickup: "123 Main St.", dropoff: "456 Elm St.", eta: "15 min" },
   { price: "$8.75", ept: "EPT", service: "Nasty Service", restaurant: "Chick-fil-A", pickup: "789 Oak St.", dropoff: "321 Pine St.", eta: "12 min" },
@@ -30,29 +31,70 @@ export default function Home() {
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [randomTrip, setRandomTrip] = useState<typeof trips[0] | null>(null);
 
-  // Pick a random trip on client side only
+  // Create audio refs array
+  const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
+
+  // Pick a random trip initially and then update every 45 seconds
   useEffect(() => {
-    const trip = trips[Math.floor(Math.random() * trips.length)];
-    setRandomTrip(trip);
+    const pickRandomTrip = () => {
+      const trip = trips[Math.floor(Math.random() * trips.length)];
+      setRandomTrip(trip);
+    };
+
+    pickRandomTrip();
+    const interval = setInterval(pickRandomTrip, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  const handlePlay = (songId: string, audio: HTMLAudioElement) => {
-    if (currentAudio && currentAudio !== audio) {
-      currentAudio.pause();
-    }
+  // Play/Stop Handler
+  const handleToggle = (songId: string, audio: HTMLAudioElement) => {
     if (playingId === songId) {
       audio.pause();
+      audio.currentTime = 0;
       setPlayingId(null);
       setCurrentAudio(null);
     } else {
+      if (currentAudio && currentAudio !== audio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+      }
+      audio.currentTime = 0;
       audio.play();
       setPlayingId(songId);
       setCurrentAudio(audio);
     }
   };
 
+  // Auto-play next song when current ends
+  useEffect(() => {
+    if (!audioRefs.current) return;
+
+    audioRefs.current.forEach((audio, index) => {
+      if (!audio) return;
+
+      const onEnded = () => {
+        const nextIndex = index + 1;
+        if (nextIndex < songs.length) {
+          const nextAudio = audioRefs.current[nextIndex];
+          if (nextAudio) handleToggle(songs[nextIndex].id, nextAudio);
+        } else {
+          setPlayingId(null);
+          setCurrentAudio(null);
+        }
+      };
+
+      audio.addEventListener("ended", onEnded);
+
+      return () => {
+        audio.removeEventListener("ended", onEnded);
+      };
+    });
+  }, [audioRefs.current, currentAudio]);
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900 relative">
+
       {/* Popup */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 p-4">
@@ -75,57 +117,78 @@ export default function Home() {
 
       {/* Header */}
       <header className="relative flex flex-col items-center text-center bg-red-600 text-white py-16 px-6 sm:py-24">
-  <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
-    Drive Safe, Homie...
-  </h1>
+        <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
+          Drive Safe, Homie...
+        </h1>
 
-  <p className="mt-5 text-lg sm:text-xl font-light opacity-90">
-    Jam out, ride safe — Hot 🔥 & fast deliveries only. 🏎️💨 🍔🎧
-  </p>
+        <p className="mt-5 text-lg sm:text-xl font-light opacity-90">
+          Jam out, ride safe — Hot 🔥 & fast deliveries only. 🏎️💨 🍔🎧
+        </p>
 
-  <p className="absolute bottom-2 text-[9px] sm:text-[10px] opacity-80 tracking-wide">
-   * Don’t drop the Starbucks 😱 — keep it hot, no cold food allowed 🚫 *
-  </p>
-</header>
+        <p className="absolute bottom-2 text-[9px] sm:text-[10px] opacity-80 tracking-wide">
+          * Don’t drop the Starbucks 😱 — keep it hot, no cold food allowed 🚫 *
+        </p>
+      </header>
 
-      {/* Songs Section */}
-      <section className="pb-6 flex flex-col items-center gap-6 px-4 mt-6 relative z-0">
-        {/* This Trip Card – restaurant separate line */}
-        {randomTrip && (
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col text-green-600 mb-6">
-            <h2 className="text-lg font-semibold mb-2">This Trip</h2>
-            <span className="self-end text-green-700 font-bold text-sm">
-              {randomTrip.price} + {randomTrip.ept} + {randomTrip.service}
-            </span>
-            <div className="mt-2 text-green-600 text-sm">
-              <p>Restaurant: {randomTrip.restaurant}</p>
-              <p>Pickup: {randomTrip.pickup}</p>
-              <p>Dropoff: {randomTrip.dropoff}</p>
-              <p>ETA: {randomTrip.eta}</p>
-            </div>
-          </div>
-        )}
+      {/* Container for Trip + Songs */}
+      <section className="pb-6 flex flex-col items-center gap-6 px-4 mt-6 relative z-0 w-full max-w-md mx-auto">
 
-        {songs.map((song) => {
-          const audioRef = useRef<HTMLAudioElement>(null);
-          return (
-            <Card key={song.id} className="w-full max-w-md shadow-md rounded-2xl border border-gray-200">
-              <CardContent className="p-6 flex flex-col items-center text-center">
-                <h2 className="text-xl font-semibold mb-3">{song.name}</h2>
-                <audio ref={audioRef} src={song.file} preload="auto" />
-                <button
-                  onClick={() => audioRef.current && handlePlay(song.id, audioRef.current)}
-                  className="mt-2 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition"
-                >
-                  {playingId === song.id ? "Pause" : "Play"}
-                </button>
-              </CardContent>
-            </Card>
-          );
-        })}
+        {/* Trip Card in a relative container to prevent shifting */}
+        <div className="relative w-full h-44"> {/* fixed height so songs don’t shift */}
+          <AnimatePresence>
+            {randomTrip && (
+              <motion.div
+                key={randomTrip.restaurant + randomTrip.pickup}
+                initial={{ x: "-100%", opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                exit={{ x: "100%", opacity: 0 }}
+                transition={{ type: "spring", stiffness: 120, damping: 20 }}
+                className="absolute w-full bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col text-green-600"
+              >
+                <h2 className="text-lg font-semibold mb-2">This Trip</h2>
+                <span className="self-end text-green-700 font-bold text-sm">
+                  {randomTrip.price} + {randomTrip.ept} + {randomTrip.service}
+                </span>
+                <div className="mt-2 text-green-600 text-sm">
+                  <p className="text-lg font-semibold">Restaurant: {randomTrip.restaurant}</p>
+                  <p>Pickup: {randomTrip.pickup}</p>
+                  <p>Dropoff: {randomTrip.dropoff}</p>
+                  <p>ETA: {randomTrip.eta}</p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-        {/* Coming Soon Banner Below Music Cards */}
-        <div className="w-full max-w-md bg-gray-100 text-gray-700 text-xs text-center rounded-xl p-2 mt-6 mb-6 shadow-sm">
+        {/* Songs */}
+        {songs.map((song, index) => (
+          <Card key={song.id} className="w-full shadow-md rounded-2xl border border-gray-200">
+            <CardContent className="p-6 flex flex-col items-center text-center">
+              <h2 className="text-xl font-semibold mb-3">{song.name}</h2>
+
+              <audio
+                ref={(el) => {
+                  audioRefs.current[index] = el;
+                }}
+                src={song.file}
+                preload="auto"
+              />
+
+              <button
+                onClick={() => {
+                  const audio = audioRefs.current[index];
+                  if (audio) handleToggle(song.id, audio);
+                }}
+                className="mt-2 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition"
+              >
+                {playingId === song.id ? "Stop" : "Play"}
+              </button>
+            </CardContent>
+          </Card>
+        ))}
+
+        {/* Banner */}
+        <div className="w-full bg-gray-100 text-gray-700 text-xs text-center rounded-xl p-2 mt-6 mb-6 shadow-sm">
           Drive Safe, Deliver Fast -- More Coming Soon
         </div>
       </section>
@@ -136,11 +199,10 @@ export default function Home() {
         <p className="text-gray-600 text-medium">All deliveries must be made in a timely manner.</p>
         <p className="text-gray-400 text-medium mb-2">
           Copyright 2025 — lawyers on call like DoorDash  
-          <span className="text-3xl align-middle">
-            👨‍⚖️ <span className="inline-block px-2">🍔</span> 🚗💨 📞
-          </span>
+          <span className="text-3xl align-middle">👨‍⚖️ <span className="inline-block px-2">🍔</span> 🚗💨 📞</span>
         </p>
       </footer>
+
     </div>
   );
 }
