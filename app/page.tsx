@@ -13,15 +13,15 @@ export const songs = [
 // Trip Array with restaurant names separate from pickup
 const trips = [
   { price: "$10.50", ept: "EPT", service: "Nasty Service", restaurant: "Willy's", pickup: "123 Main St.", dropoff: "456 Elm St.", eta: "15 min" },
-  { price: "$8.75", ept: "EPT", service: "Nasty Service", restaurant: "Chick-fil-A", pickup: "789 Oak St.", dropoff: "321 Pine St.", eta: "12 min" },
-  { price: "$12.00", ept: "EPT", service: "Nasty Service", restaurant: "Zaxby’s", pickup: "555 Maple Ave.", dropoff: "888 Cedar Rd.", eta: "18 min" },
-  { price: "$9.50", ept: "EPT", service: "Nasty Service", restaurant: "Chili's", pickup: "101 Birch Blvd.", dropoff: "202 Walnut St.", eta: "14 min" },
-  { price: "$11.20", ept: "EPT", service: "Nasty Service", restaurant: "Iron Age", pickup: "303 Spruce Ln.", dropoff: "404 Aspen Ct.", eta: "17 min" },
-  { price: "$7.80", ept: "EPT", service: "Nasty Service", restaurant: "Popeyes", pickup: "606 Poplar St.", dropoff: "707 Chestnut Ave.", eta: "10 min" },
-  { price: "$13.50", ept: "EPT", service: "Nasty Service", restaurant: "Five Guys", pickup: "909 Willow Dr.", dropoff: "1010 Pine St.", eta: "20 min" },
-  { price: "$10.00", ept: "EPT", service: "Nasty Service", restaurant: "Wendy's", pickup: "111 Elm St.", dropoff: "222 Oak St.", eta: "16 min" },
-  { price: "$8.90", ept: "EPT", service: "Nasty Service", restaurant: "Domino's", pickup: "333 Cedar St.", dropoff: "444 Maple Rd.", eta: "13 min" },
-  { price: "$12.75", ept: "EPT", service: "Nasty Service", restaurant: "P.F. Chang's", pickup: "555 Birch St.", dropoff: "666 Spruce Ave.", eta: "19 min" },
+  { price: "$8.75", ept: "EPT", service: "Chill Delivery", restaurant: "Chick-fil-A", pickup: "789 Oak St.", dropoff: "321 Pine St.", eta: "12 min" },
+  { price: "$12.00", ept: "EPT", service: "Fast Lane", restaurant: "Zaxby’s", pickup: "555 Maple Ave.", dropoff: "888 Cedar Rd.", eta: "18 min" },
+  { price: "$9.50", ept: "EPT", service: "Pro Delivery", restaurant: "Chili's", pickup: "101 Birch Blvd.", dropoff: "202 Walnut St.", eta: "14 min" },
+  { price: "$11.20", ept: "EPT", service: "Quick Eats", restaurant: "Iron Age", pickup: "303 Spruce Ln.", dropoff: "404 Aspen Ct.", eta: "17 min" },
+  { price: "$7.80", ept: "EPT", service: "Speedy", restaurant: "Popeyes", pickup: "606 Poplar St.", dropoff: "707 Chestnut Ave.", eta: "10 min" },
+  { price: "$13.50", ept: "EPT", service: "VIP Service", restaurant: "Five Guys", pickup: "909 Willow Dr.", dropoff: "1010 Pine St.", eta: "20 min" },
+  { price: "$10.00", ept: "EPT", service: "Green Delivery", restaurant: "Wendy's", pickup: "111 Elm St.", dropoff: "222 Oak St.", eta: "16 min" },
+  { price: "$8.90", ept: "EPT", service: "Rapid Eats", restaurant: "Domino's", pickup: "333 Cedar St.", dropoff: "444 Maple Rd.", eta: "13 min" },
+  { price: "$12.75", ept: "EPT", service: "Fresh & Fast", restaurant: "P.F. Chang's", pickup: "555 Birch St.", dropoff: "666 Spruce Ave.", eta: "19 min" },
 ];
 
 export default function Home() {
@@ -77,15 +77,12 @@ export default function Home() {
       <header className="flex flex-col items-center justify-center py-16 px-6 text-center sm:py-20 bg-red-600 text-white">
         <h1 className="text-5xl font-bold leading-tight">Drive Safe, Homie...</h1>
         <p className="mt-4 text-lg font-xs">
-          Jam out, ride safe — safe and fast deliveries. 
-        </p>
-        <p className="mt-4 text-lg font-xs">
-         🏎️💨 🍔🎧
+          Jam out, ride safe — safe and fast deliveries. 🏎️💨 🍔🎧
         </p>
       </header>
 
       {/* Songs Section */}
-      <section className="pb-20 flex flex-col items-center gap-6 px-4 mt-6 relative z-0">
+      <section className="pb-6 flex flex-col items-center gap-6 px-4 mt-6 relative z-0">
         {/* This Trip Card – restaurant separate line */}
         {randomTrip && (
           <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-200 p-4 flex flex-col text-green-600 mb-6">
@@ -119,6 +116,11 @@ export default function Home() {
             </Card>
           );
         })}
+
+        {/* Coming Soon Banner Below Music Cards */}
+        <div className="w-full max-w-md bg-gray-100 text-gray-700 text-xs text-center rounded-xl p-2 mt-6 mb-6 shadow-sm">
+          Drive Safe, Deliver Fast -- More Coming Soon
+        </div>
       </section>
 
       {/* Footer */}
