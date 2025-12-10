@@ -26,15 +26,35 @@ const trips = [
 ];
 
 export default function Home() {
+  const [isBlackout, setIsBlackout] = useState(false);
   const [showPopup, setShowPopup] = useState(true);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [playingId, setPlayingId] = useState<string | null>(null);
   const [randomTrip, setRandomTrip] = useState<typeof trips[0] | null>(null);
 
-  // Create audio refs array
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
 
-  // Pick a random trip initially and then update every 45 seconds
+  // Persistent blackout timer
+  useEffect(() => {
+    const now = Date.now();
+    const envEnd = process.env.NEXT_PUBLIC_BLACKOUT_END_TIMESTAMP;
+
+    // Use env variable if available, otherwise set 3 hours from now
+    const endTime = envEnd ? parseInt(envEnd) : now + 3 * 60 * 60 * 1000;
+
+    if (now > endTime) {
+      setIsBlackout(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setIsBlackout(true);
+    }, endTime - now);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Random trip logic
   useEffect(() => {
     const pickRandomTrip = () => {
       const trip = trips[Math.floor(Math.random() * trips.length)];
@@ -43,7 +63,6 @@ export default function Home() {
 
     pickRandomTrip();
     const interval = setInterval(pickRandomTrip, 30000);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -66,7 +85,7 @@ export default function Home() {
     }
   };
 
-  // Auto-play next song when current ends
+  // Auto-play next song
   useEffect(() => {
     if (!audioRefs.current) return;
 
@@ -85,16 +104,25 @@ export default function Home() {
       };
 
       audio.addEventListener("ended", onEnded);
-
-      return () => {
-        audio.removeEventListener("ended", onEnded);
-      };
+      return () => audio.removeEventListener("ended", onEnded);
     });
   }, [audioRefs.current, currentAudio]);
 
+  // Blackout / Delivered screen
+  if (isBlackout) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#FF3008] text-white text-5xl font-bold flex-col p-4 text-center">
+        <span className="mb-4 text-6xl animate-bounce">✅</span>
+        <div className="mb-2">Delivered Successfully.</div>
+        <div className="text-xl font-medium mt-2">
+          Check back soon for more orders 🚗💵
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col min-h-screen bg-white text-gray-900 relative">
-
       {/* Popup */}
       {showPopup && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/70 z-50 p-4">
@@ -120,11 +148,9 @@ export default function Home() {
         <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight leading-tight drop-shadow-md">
           Drive Safe, Homie...
         </h1>
-
         <p className="mt-5 text-lg sm:text-xl font-light opacity-90">
           Jam out, ride safe — Hot 🔥 & fast deliveries only. 🏎️💨 🍔🎧
         </p>
-
         <p className="absolute bottom-2 text-[9px] sm:text-[10px] opacity-80 tracking-wide">
           * Don’t drop the Starbucks 😱 — keep it hot, no cold food allowed 🚫 *
         </p>
@@ -132,9 +158,8 @@ export default function Home() {
 
       {/* Container for Trip + Songs */}
       <section className="pb-6 flex flex-col items-center gap-6 px-4 mt-6 relative z-0 w-full max-w-md mx-auto">
-
-        {/* Trip Card in a relative container to prevent shifting */}
-        <div className="relative w-full h-44"> {/* fixed height so songs don’t shift */}
+        {/* Trip Card */}
+        <div className="relative w-full h-44">
           <AnimatePresence>
             {randomTrip && (
               <motion.div
@@ -165,7 +190,6 @@ export default function Home() {
           <Card key={song.id} className="w-full shadow-md rounded-2xl border border-gray-200">
             <CardContent className="p-6 flex flex-col items-center text-center">
               <h2 className="text-xl font-semibold mb-3">{song.name}</h2>
-
               <audio
                 ref={(el) => {
                   audioRefs.current[index] = el;
@@ -173,7 +197,6 @@ export default function Home() {
                 src={song.file}
                 preload="auto"
               />
-
               <button
                 onClick={() => {
                   const audio = audioRefs.current[index];
@@ -202,7 +225,6 @@ export default function Home() {
           <span className="text-3xl align-middle">👨‍⚖️ <span className="inline-block px-2">🍔</span> 🚗💨 📞</span>
         </p>
       </footer>
-
     </div>
   );
 }
