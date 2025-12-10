@@ -181,7 +181,7 @@ export default function Home() {
                 }}
                 className="mt-2 px-6 py-2 bg-red-600 hover:bg-red-700 text-white rounded-full font-medium transition"
               >
-                {playingId === song.id ? "Stop" : "Play"}
+                {playingId === song.id ? "End Trip" : "Accept"}
               </button>
             </CardContent>
           </Card>
