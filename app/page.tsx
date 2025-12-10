@@ -36,16 +36,19 @@ export default function Home() {
 
   // Persistent blackout timer
   useEffect(() => {
+    const blackoutKey = "mac_beats_blackout_end#5";
     const now = Date.now();
-    const envEnd = process.env.NEXT_PUBLIC_BLACKOUT_END_TIMESTAMP;
 
-    // Use env variable if available, otherwise set 3 hours from now
-    const endTime = envEnd ? parseInt(envEnd) : now + 3 * 60 * 60 * 1000;
-
-    if (now > endTime) {
+    const storedEnd = localStorage.getItem(blackoutKey);
+    if (storedEnd && now > parseInt(storedEnd)) {
       setIsBlackout(true);
       return;
     }
+
+    // Set timer for blackout (10 seconds for testing, change to 2 hours later)
+    const endTime = storedEnd ? parseInt(storedEnd) : now + 10_800_000; // 3 hours
+
+    localStorage.setItem(blackoutKey, endTime.toString());
 
     const timer = setTimeout(() => {
       setIsBlackout(true);
@@ -112,12 +115,12 @@ export default function Home() {
   if (isBlackout) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-[#FF3008] text-white text-5xl font-bold flex-col p-4 text-center">
-        <span className="mb-4 text-6xl animate-bounce">✅</span>
-        <div className="mb-2">Delivered Successfully.</div>
-        <div className="text-xl font-medium mt-2">
-          Check back soon for more orders 🚗💵
-        </div>
+      <span className="mb-4 text-6xl animate-bounce">✅</span>
+      <div className="mb-2">Delivered Successfully.</div>
+      <div className="text-xl font-medium mt-2">
+        Check back soon for more orders 🚗💵
       </div>
+    </div>
     );
   }
 
